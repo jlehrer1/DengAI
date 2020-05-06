@@ -14,9 +14,9 @@ def process_data(imputer):
     df_labels = pd.read_csv('../data/raw/dengue_labels_train.csv')
     df_test = pd.read_csv('../data/raw/dengue_features_test.csv')
 
-    df = impute_df(df)
-    df_labels = impute_df(df_labels)
-    df_test = impute_df(df_test)
+    df = impute_df(df, imputer)
+    df_labels = impute_df(df_labels, imputer)
+    df_test = impute_df(df_test, imputer)
 
     try:
         df.drop(labels=['precipitation_amt_mm', 'reanalysis_specific_humidity_g_per_kg', 'reanalysis_min_air_temp_k'], axis=1, inplace=True)
@@ -24,10 +24,14 @@ def process_data(imputer):
     except KeyError:
         print('Columns already dropped. Continuing...')
 
-    sj_train_features = df.loc[df['city'] == 'sj']
-    iq_train_features = df.loc[df['city'] == 'sj']
+    sj_train_features = df[df['city'] == 'sj']
+    iq_train_features = df[df['city'] == 'iq']
+
     sj_train_labels = df_labels[df_labels['city'] == 'sj']
     iq_train_labels = df_labels[df_labels['city'] == 'iq']
+
+    sj_test_features = df_test[df_test['city'] == 'sj']
+    iq_test_features = df_test[df_test['city'] == 'iq']
 
     df.to_csv('../data/clean/full/dengue_features_train.csv', index=False)
     df_labels.to_csv('../data/clean/full/dengue_labels_train.csv', index=False)
@@ -35,8 +39,12 @@ def process_data(imputer):
 
     sj_train_features.to_csv('../data/clean/sj/sj_train_features.csv', index=False)
     sj_train_labels.to_csv('../data/clean/sj/sj_train_labels.csv', index=False)
+
     iq_train_features.to_csv('../data/clean/iq/iq_train_features.csv', index=False)
     iq_train_labels.to_csv('../data/clean/iq/iq_train_labels.csv', index=False)
+
+    sj_test_features.to_csv('../data/clean/sj/sj_test_features.csv', index=False)
+    iq_test_features.to_csv('../data/clean/iq/iq_test_features.csv', index=False)
 
 if __name__ == "__main__":
     imputer = KNNImputer()
