@@ -4,12 +4,22 @@ import sklearn as sk
 from sklearn.impute import KNNImputer
 
 def impute_df(df, imputer):
+    """Imputes each column in the given df
+        Usage:
+            df: pandas DataFrame to be imputed
+            imputer: sklearn-type imputer
+    """
     for column in df.columns:
         if df[column].isna().sum() != 0:
             df[column] = imputer.fit_transform(df[[column]])
     return df
 
 def process_data(imputer):
+    """Data preprocessing for DengAI. Imputes missing data then generates
+    new .csv files for each city 
+        Usage:
+            imputer: sklearn-type imputer
+    """
     df = pd.read_csv('../data/raw/dengue_features_train.csv')
     df_labels = pd.read_csv('../data/raw/dengue_labels_train.csv')
     df_test = pd.read_csv('../data/raw/dengue_features_test.csv')
@@ -47,5 +57,6 @@ def process_data(imputer):
     iq_test_features.to_csv('../data/clean/iq/iq_test_features.csv', index=False)
 
 if __name__ == "__main__":
+    # Impute using sklearn.impute.KNNImputer
     imputer = KNNImputer()
     process_data(imputer)
